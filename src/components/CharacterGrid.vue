@@ -3,39 +3,51 @@
     <div id="form">
       <input
         type="text"
+        class="search"
         placeholder="Search a character..."
         v-model.trim="searchText"
         autofocus
       />
-      <button v-on:click="onSearch" id="search">Search</button>
+      <button v-on:click="onSearch" class="btn">Search</button>
     </div>
-    <div v-if="isLoading === true">Loading!</div>
+    <div class="info" v-if="!characters">No Results</div>
     <div class="cards">
       <div class="card" v-for="character in characters" :key="character.id">
-        <router-link></router-link>
-        <img :src="character.image" :alt="character.name" />
-        <h2>{{ character.name }}</h2>
+        <character-item v-bind:character="character" />
+
+        <router-link :to="`characters/${character.id}`">
+          <img :src="character.image" :alt="character.name" />
+          <h2>{{ character.name }}</h2>
+        </router-link>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import CharacterItem from "./CharacterItem.vue";
+
 export default {
   name: "CharacterGrid",
-  data() {
-    return {
-      characters: null,
-      isLoading: null,
-      searchText: null,
-    };
+  components: { CharacterItem },
+  props: {
+    characters: Array,
+    searchText: String,
+    BASE_URL: {
+      type: String,
+      default: "https://rickandmortyapi.com/api/character",
+    },
   },
   methods: {
-    onSearch: function () {
-      fetch(`https://rickandmortyapi.com/api/character?name=${this.searchText}`)
+    onSearch: function (param) {
+      if (param) {
+        this.BASE_URL = `${this.BASE_URL}?name=${this.searchText}`;
+      }
+      fetch(`${this.BASE_URL}`)
         .then((res) => res.json())
         .then((data) => (this.characters = data.results))
         .catch((err) => console.error(err));
+      this.BASE_URL = "https://rickandmortyapi.com/api/character";
     },
   },
   created: function () {
@@ -43,15 +55,10 @@ export default {
       const key = e.which || e.keyCode;
       const symbol = e.key;
       if (key === 13 || symbol === "Enter") {
-        this.onSearch();
+        this.onSearch(true);
       }
     }),
-      (this.isLoading = true);
-    fetch("https://rickandmortyapi.com/api/character")
-      .then((res) => res.json())
-      .then((data) => (this.characters = data.results))
-      .catch((err) => console.error(err));
-    this.isLoading = false;
+      this.onSearch();
   },
 };
 </script>
@@ -91,17 +98,22 @@ div#form {
   margin: 3rem 0 1rem 0;
 }
 
-input[type="text"] {
+input.search {
   color: #9d5716;
   margin-bottom: 2rem;
   height: 3.5rem;
+  width: 20rem;
   border-radius: 0.5rem;
   border: none;
   padding: 0.5rem;
   background-color: #fff;
 }
 
-button#search {
+input.search:focus {
+  outline: none;
+}
+
+button.btn {
   text-transform: uppercase;
   height: 3.5rem;
   border: none;
@@ -116,5 +128,11 @@ button#search {
 }
 button#search:focus {
   outline: none;
+}
+
+.info {
+  text-align: center;
+  color: #fff;
+  font-size: 2.5rem;
 }
 </style>
