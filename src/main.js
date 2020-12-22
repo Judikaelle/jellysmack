@@ -1,8 +1,25 @@
 import Vue from 'vue'
 import App from './App.vue'
+import VueRouter from 'vue-router'
+
+// Components
+import CharacterGrid from '../src/components/CharacterGrid.vue'
+import CharacterItem from '../src/components/CharacterItem.vue'
 
 Vue.config.productionTip = false
+Vue.use(VueRouter)
+
+const routes = [
+	{ path: '/characters', component: CharacterGrid },
+	{ path: '/characters/:id', component: CharacterItem },
+]
+
+const router = new VueRouter({
+	mode: 'history',
+	routes,
+})
 
 new Vue({
-  render: h => h(App),
+	router,
+	render: h => h(App),
 }).$mount('#app')
