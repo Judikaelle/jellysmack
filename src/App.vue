@@ -1,19 +1,12 @@
 <template>
   <div id="app">
     <h1>Rick & Morty API</h1>
-    <CharacterGrid />
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import CharacterGrid from "./components/CharacterGrid.vue";
-
-export default {
-  name: "App",
-  components: {
-    CharacterGrid,
-  },
-};
+export default {};
 </script>
 
 <style>
@@ -54,5 +47,6 @@ body {
   font-size: 5rem;
   text-align: center;
   color: #fff;
+  margin-bottom: 10rem;
 }
 </style>

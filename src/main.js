@@ -11,7 +11,8 @@ Vue.use(VueRouter)
 
 const routes = [
 	{ path: '/characters', component: CharacterGrid },
-	{ path: '/characters/:id', component: CharacterItem },
+	{ path: '/characters/:id(\\d+)', component: CharacterItem },
+	{ path: '*', redirect: '/characters' },
 ]
 
 const router = new VueRouter({

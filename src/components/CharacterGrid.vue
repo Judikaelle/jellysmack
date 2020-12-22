@@ -12,6 +12,7 @@
     <div v-if="isLoading === true">Loading!</div>
     <div class="cards">
       <div class="card" v-for="character in characters" :key="character.id">
+        <router-link></router-link>
         <img :src="character.image" :alt="character.name" />
         <h2>{{ character.name }}</h2>
       </div>
