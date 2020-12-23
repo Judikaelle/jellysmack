@@ -1,5 +1,5 @@
 <template>
-  <v-app id="app">
+  <v-app>
     <router-view></router-view>
   </v-app>
 </template>
@@ -37,7 +37,7 @@ body {
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  max-width: 110rem;
+  max-width: 115rem;
   margin: auto;
   padding: 5rem 15rem;
   background-color: inherit;

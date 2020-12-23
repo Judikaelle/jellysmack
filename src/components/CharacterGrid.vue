@@ -1,49 +1,72 @@
 <template>
   <div>
-    <h1>Rick & Morty API</h1>
+    <h1 class="text-center white--text mb-15 font-weight-black">
+      Rick & Morty API
+    </h1>
     <v-row>
-      <v-col>
+      <v-col align="center">
         <div>
           <v-text-field
+            class="input"
             label="Search a character"
             v-model.trim="searchText"
             autofocus
             dark
           ></v-text-field>
         </div>
-        <div class="mb-2">
-          <v-btn color="primary" @click="onSearch">Search</v-btn>
+        <div class="mb-2 align-self-start">
+          <v-btn
+            color="primary text-uppercase align-self-start"
+            @click="() => onSearch(true)"
+            >Search</v-btn
+          >
         </div>
       </v-col>
     </v-row>
-    <div class="info" v-if="!characters">No Results</div>
-    <v-container fluid v-else>
-      <v-row>
+    <div class="text-center white--text mt-10" v-if="isLoading">Loading...</div>
+    <v-row v-else align="center" justify="center">
+      <v-alert
+        class="alert mt-15 text-center"
+        type="info"
+        outlined
+        v-if="!characters"
+        >Sorry, there is no result 😢</v-alert
+      >
+      <v-container fluid v-else>
         <v-col cols="12">
-          <v-row style="height: 300px">
+          <v-row>
             <v-card
-              class="ma-2"
+              class="ma-3"
               v-for="character in characters"
               :key="character.id"
               shaped
             >
-              <v-img height="200px" :src="character.image"> </v-img>
-              <v-card-title class="pb-0">{{ character.name }}</v-card-title>
+              <v-img
+                max-height="200px"
+                maw-width="100px"
+                :src="character.image"
+              >
+              </v-img>
+              <v-card-title class="justify-center">{{
+                character.name
+              }}</v-card-title>
               <!-- <router-link :to="`/characters/${character.id}`">
 									<character-item :character="character" />
 								</router-link> -->
             </v-card>
           </v-row>
         </v-col>
-      </v-row>
-      <v-pagination
-        class="pagination"
-        v-model="currentPage"
-        :length="nbPages"
-        :total-visible="7"
-        @input="onSearch"
-      ></v-pagination>
-    </v-container>
+        <v-row align="center" justify="center">
+          <v-pagination
+            class="pagination"
+            v-model="currentPage"
+            :length="nbPages"
+            :total-visible="7"
+            @input="onSearch"
+          ></v-pagination>
+        </v-row>
+      </v-container>
+    </v-row>
   </div>
 </template>
 
@@ -59,22 +82,32 @@ export default {
       searchText: null,
       currentPage: 1,
       nbPages: null,
-      BASE_URL: `https://rickandmortyapi.com/api/character?page=${this.currentPage}`,
+      baseUrl: `https://rickandmortyapi.com/api/character`,
+      currentUrl: "",
+      isLoading: false,
     };
   },
   methods: {
-    onSearch: async function (param) {
-      let currentUrl = param
-        ? `${this.BASE_URL}?name=${this.searchText}&page=${this.currentPage}`
-        : this.BASE_URL;
+    onSearch: async function (value) {
+      // If value === true, reset currentPage
+      if (typeof value === "boolean" && value === true) {
+        this.currentPage = 1;
+      }
+      // Remove name param if searchText is null
+      this.currentUrl =
+        this.searchText !== null
+          ? `${this.baseUrl}?name=${this.searchText}&page=${this.currentPage}`
+          : `${this.baseUrl}?page=${this.currentPage}`;
       try {
-        const res = await fetch(currentUrl);
+        this.isLoading = true;
+        const res = await fetch(this.currentUrl);
         const data = await res.json();
         this.characters = data.results;
         this.nbPages = data.info.pages;
       } catch (err) {
         console.error(err);
       }
+      this.isLoading = false;
     },
   },
   mounted: function () {
@@ -91,16 +124,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h1 {
-  font-size: 4rem;
-  text-align: center;
+.pagination {
+  margin-top: 3rem;
   color: #fff;
-  margin-bottom: 7rem;
 }
 
-.pagination {
-  margin-top: 4rem;
-  color: #fff;
+.alert {
+  width: 30%;
+}
+
+.input {
+  width: 30%;
 }
 
 .info {
@@ -108,17 +142,5 @@ h1 {
   color: #fff;
   font-size: 2.5rem;
   background-color: transparent;
-}
-
-@media (max-width: 800px) {
-  .cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 500px) {
-  .cards {
-    grid-template-columns: 1fr;
-  }
 }
 </style>
