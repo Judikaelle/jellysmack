@@ -13,9 +13,8 @@
     <div class="info" v-if="!characters">No Results</div>
     <div class="cards">
       <div class="card" v-for="character in characters" :key="character.id">
-        <character-item v-bind:character="character" />
-
-        <router-link :to="`characters/${character.id}`">
+        <character-item :character="character" />
+        <router-link :to="`/characters/${character.id}`">
           <img :src="character.image" :alt="character.name" />
           <h2>{{ character.name }}</h2>
         </router-link>
@@ -39,15 +38,17 @@ export default {
     },
   },
   methods: {
-    onSearch: function (param) {
-      if (param) {
-        this.BASE_URL = `${this.BASE_URL}?name=${this.searchText}`;
+    onSearch: async function (param) {
+      let currentUrl = param
+        ? `${this.BASE_URL}?name=${this.searchText}`
+        : this.BASE_URL;
+      try {
+        const res = await fetch(currentUrl);
+        const data = await res.json();
+        this.characters = data.results;
+      } catch (err) {
+        console.error(err);
       }
-      fetch(`${this.BASE_URL}`)
-        .then((res) => res.json())
-        .then((data) => (this.characters = data.results))
-        .catch((err) => console.error(err));
-      this.BASE_URL = "https://rickandmortyapi.com/api/character";
     },
   },
   created: function () {
@@ -126,6 +127,7 @@ button.btn {
   letter-spacing: 0.1rem;
   font-size: 1.7rem;
 }
+
 button#search:focus {
   outline: none;
 }
@@ -134,5 +136,17 @@ button#search:focus {
   text-align: center;
   color: #fff;
   font-size: 2.5rem;
+}
+
+@media (max-width: 800px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
