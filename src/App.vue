@@ -1,8 +1,7 @@
 <template>
-  <div id="app">
-    <h1>Rick & Morty API</h1>
+  <v-app id="app">
     <router-view></router-view>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -40,13 +39,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   max-width: 110rem;
   margin: auto;
-  padding: 5rem 2rem;
-}
-
-#app h1 {
-  font-size: 5rem;
-  text-align: center;
-  color: #fff;
-  margin-bottom: 10rem;
+  padding: 5rem 15rem;
+  background-color: inherit;
 }
 </style>

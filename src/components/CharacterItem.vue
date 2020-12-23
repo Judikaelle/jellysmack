@@ -1,14 +1,17 @@
 <template>
   <div>
     <router-link :to="'/characters'">Back</router-link>
-    <h1>Character Item</h1>
-    <p>{{ character.name }}</p>
-    <p>{{ $route.params.id }}</p>
+    <img :src="character.image" :alt="character.name" />
+    <h2>{{ character.name }}</h2>
+    <h4>{{ character.status }}</h4>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  name: "CharacterItem",
+  props: ["character"],
+};
 </script>
 
 <style lang="scss" scoped>

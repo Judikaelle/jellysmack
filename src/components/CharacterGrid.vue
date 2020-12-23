@@ -1,57 +1,83 @@
 <template>
   <div>
-    <div id="form">
-      <input
-        type="text"
-        class="search"
-        placeholder="Search a character..."
-        v-model.trim="searchText"
-        autofocus
-      />
-      <button v-on:click="onSearch" class="btn">Search</button>
-    </div>
+    <h1>Rick & Morty API</h1>
+    <v-row>
+      <v-col>
+        <div>
+          <v-text-field
+            label="Search a character"
+            v-model.trim="searchText"
+            autofocus
+            dark
+          ></v-text-field>
+        </div>
+        <div class="mb-2">
+          <v-btn color="primary" @click="onSearch">Search</v-btn>
+        </div>
+      </v-col>
+    </v-row>
     <div class="info" v-if="!characters">No Results</div>
-    <div class="cards">
-      <div class="card" v-for="character in characters" :key="character.id">
-        <character-item :character="character" />
-        <router-link :to="`/characters/${character.id}`">
-          <img :src="character.image" :alt="character.name" />
-          <h2>{{ character.name }}</h2>
-        </router-link>
-      </div>
-    </div>
+    <v-container fluid v-else>
+      <v-row>
+        <v-col cols="12">
+          <v-row style="height: 300px">
+            <v-card
+              class="ma-2"
+              v-for="character in characters"
+              :key="character.id"
+              shaped
+            >
+              <v-img height="200px" :src="character.image"> </v-img>
+              <v-card-title class="pb-0">{{ character.name }}</v-card-title>
+              <!-- <router-link :to="`/characters/${character.id}`">
+									<character-item :character="character" />
+								</router-link> -->
+            </v-card>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-pagination
+        class="pagination"
+        v-model="currentPage"
+        :length="nbPages"
+        :total-visible="7"
+        @input="onSearch"
+      ></v-pagination>
+    </v-container>
   </div>
 </template>
 
 <script>
-import CharacterItem from "./CharacterItem.vue";
+// import CharacterItem from "./CharacterItem.vue";
 
 export default {
   name: "CharacterGrid",
-  components: { CharacterItem },
-  props: {
-    characters: Array,
-    searchText: String,
-    BASE_URL: {
-      type: String,
-      default: "https://rickandmortyapi.com/api/character",
-    },
+  // components: { CharacterItem },
+  data() {
+    return {
+      characters: null,
+      searchText: null,
+      currentPage: 1,
+      nbPages: null,
+      BASE_URL: `https://rickandmortyapi.com/api/character?page=${this.currentPage}`,
+    };
   },
   methods: {
     onSearch: async function (param) {
       let currentUrl = param
-        ? `${this.BASE_URL}?name=${this.searchText}`
+        ? `${this.BASE_URL}?name=${this.searchText}&page=${this.currentPage}`
         : this.BASE_URL;
       try {
         const res = await fetch(currentUrl);
         const data = await res.json();
         this.characters = data.results;
+        this.nbPages = data.info.pages;
       } catch (err) {
         console.error(err);
       }
     },
   },
-  created: function () {
+  mounted: function () {
     window.addEventListener("keydown", (e) => {
       const key = e.which || e.keyCode;
       const symbol = e.key;
@@ -64,78 +90,24 @@ export default {
 };
 </script>
 
-<style scoped>
-.cards {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2.5rem;
-}
-
-.card {
-  cursor: pointer;
-  height: 30rem;
-  margin-bottom: 1rem;
-}
-
-.card h2 {
-  font-size: 1.5rem;
+<style lang="scss" scoped>
+h1 {
+  font-size: 4rem;
   text-align: center;
   color: #fff;
+  margin-bottom: 7rem;
 }
 
-.card img {
-  width: 100%;
-  height: 29rem;
-  border-radius: 1rem;
-  border: 0.3rem solid #fff;
-  box-shadow: 5px 10px 5px 0px rgba(0, 0, 0, 0.28);
-  -webkit-box-shadow: 5px 10px 5px 0px rgba(0, 0, 0, 0.28);
-  -moz-box-shadow: 5px 10px 5px 0px rgba(0, 0, 0, 0.28);
-}
-
-div#form {
-  display: flex;
-  justify-content: center;
-  margin: 3rem 0 1rem 0;
-}
-
-input.search {
-  color: #9d5716;
-  margin-bottom: 2rem;
-  height: 3.5rem;
-  width: 20rem;
-  border-radius: 0.5rem;
-  border: none;
-  padding: 0.5rem;
-  background-color: #fff;
-}
-
-input.search:focus {
-  outline: none;
-}
-
-button.btn {
-  text-transform: uppercase;
-  height: 3.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  background-color: #1f9ce0;
-  padding: 0.5rem 1rem;
+.pagination {
+  margin-top: 4rem;
   color: #fff;
-  margin-left: 0.5rem;
-  cursor: pointer;
-  letter-spacing: 0.1rem;
-  font-size: 1.7rem;
-}
-
-button#search:focus {
-  outline: none;
 }
 
 .info {
   text-align: center;
   color: #fff;
   font-size: 2.5rem;
+  background-color: transparent;
 }
 
 @media (max-width: 800px) {

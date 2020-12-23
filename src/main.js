@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 // Components
 import CharacterGrid from '../src/components/CharacterGrid.vue'
 import CharacterItem from '../src/components/CharacterItem.vue'
+import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 Vue.use(VueRouter)
@@ -21,6 +22,7 @@ const router = new VueRouter({
 })
 
 new Vue({
-	router,
-	render: h => h(App),
+    router,
+    vuetify,
+    render: h => h(App)
 }).$mount('#app')
