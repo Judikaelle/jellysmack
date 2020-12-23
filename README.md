@@ -1,8 +1,8 @@
 ## Try it
 
 ```bash
-git clone https://github.com/Judikaelle/jellysmack-technical-test
-cd jellysmack-technical-test
+git clone https://github.com/Judikaelle/jellysmack
+cd jellysmack
 yarn install
 yarn serve
 ```
