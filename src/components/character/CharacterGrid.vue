@@ -10,6 +10,7 @@
             class="input"
             label="Search a character"
             v-model.trim="searchText"
+            @keyup.enter="onSearch(true)"
             autofocus
             dark
           ></v-text-field>
@@ -17,7 +18,7 @@
         <div class="mb-2 align-self-start">
           <v-btn
             color="primary text-uppercase align-self-start"
-            @click="() => onSearch(true)"
+            @click="onSearch(true)"
             >Search</v-btn
           >
         </div>
@@ -34,25 +35,14 @@
       >
       <v-container fluid v-else>
         <v-col cols="12">
-          <v-row>
+          <v-row align="center" justify="center">
             <v-card
               class="ma-3"
               v-for="character in characters"
               :key="character.id"
               shaped
             >
-              <v-img
-                max-height="200px"
-                maw-width="100px"
-                :src="character.image"
-              >
-              </v-img>
-              <v-card-title class="justify-center">{{
-                character.name
-              }}</v-card-title>
-              <!-- <router-link :to="`/characters/${character.id}`">
-									<character-item :character="character" />
-								</router-link> -->
+              <character-item :character="character" />
             </v-card>
           </v-row>
         </v-col>
@@ -71,14 +61,15 @@
 </template>
 
 <script>
-// import CharacterItem from "./CharacterItem.vue";
+import CharacterItem from "./CharacterItem.vue";
 
 export default {
   name: "CharacterGrid",
-  // components: { CharacterItem },
+  components: { CharacterItem },
   data() {
     return {
       characters: null,
+      character: null,
       searchText: null,
       currentPage: 1,
       nbPages: null,
@@ -93,7 +84,7 @@ export default {
       if (typeof value === "boolean" && value === true) {
         this.currentPage = 1;
       }
-      // Remove name param if searchText is null
+      // Remove name from url if searchText is null
       this.currentUrl =
         this.searchText !== null
           ? `${this.baseUrl}?name=${this.searchText}&page=${this.currentPage}`
@@ -111,14 +102,7 @@ export default {
     },
   },
   mounted: function () {
-    window.addEventListener("keydown", (e) => {
-      const key = e.which || e.keyCode;
-      const symbol = e.key;
-      if (key === 13 || symbol === "Enter") {
-        this.onSearch(true);
-      }
-    }),
-      this.onSearch();
+    this.onSearch();
   },
 };
 </script>
@@ -135,12 +119,5 @@ export default {
 
 .input {
   width: 30%;
-}
-
-.info {
-  text-align: center;
-  color: #fff;
-  font-size: 2.5rem;
-  background-color: transparent;
 }
 </style>
