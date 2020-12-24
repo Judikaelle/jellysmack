@@ -8,7 +8,8 @@
         </v-btn></router-link
       >
     </v-row>
-    <v-row align="center" justify="center">
+    <v-row v-if="!character">Loading...</v-row>
+    <v-row v-else align="center" justify="center">
       <v-card class="mx-auto my-12" max-width="374">
         <v-img :src="character.image" height="200px" min-width="300px"></v-img>
 
@@ -65,12 +66,30 @@
 export default {
   name: "CharacterPage",
   props: {
-    character: Object,
+    id: [String, Number],
   },
   data: function () {
     return {
       show: false,
+      character: null,
     };
+  },
+  methods: {
+    fetchData: async function () {
+      try {
+        const res = await fetch(
+          `https://rickandmortyapi.com/api/character/${this.id}`
+        );
+        const data = await res.json();
+        this.character = data;
+      } catch (err) {
+        console.error(err);
+      }
+    },
+  },
+  mounted: function () {
+    if (this.character !== null) return;
+    this.fetchData();
   },
 };
 </script>
