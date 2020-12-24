@@ -13,7 +13,7 @@ Vue.use(VueRouter)
 const routes = [
 	{ path: '/characters', name: 'CharacterGrid', component: CharacterGrid },
 	{
-		path: '/characters/:id',
+		path: '/characters/:id(\\d+)',
 		name: 'CharacterPage',
 		component: CharacterPage,
 		props: true,
