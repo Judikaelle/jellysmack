@@ -1,4 +1,11 @@
-## Try it
+## Rick & Morty API
+
+### What did i use?
+<ul>
+  <li>Vue</li>
+  <li>Vuetify</li>
+  <li>Vue Router</li>
+ </ul>
 
 ```bash
 git clone https://github.com/Judikaelle/jellysmack
