@@ -7,6 +7,7 @@
   <li>Vue Router</li>
  </ul>
 
+### Test it 
 ```bash
 git clone https://github.com/Judikaelle/jellysmack
 cd jellysmack
